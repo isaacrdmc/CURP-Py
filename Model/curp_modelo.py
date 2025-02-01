@@ -28,20 +28,25 @@ class CurpModel:
 
         parte1 = (
             # Llamamos la función para buscar las vocales dentro d elos apellidos
+            # COn el [0] indicamos que solo tome la primera posicón de la plabra
             ape_Pa_mayus[0] + 
             self.buscarVocal(ape_Pa_mayus) + 
             ape_Ma_mayus[0] + 
-            nombre_mayus
+            nombre_mayus[0]
         )
 
         # ^ P2: Fecha AA/MM/DD
         # Validamos los datos:
         if self.validarAno(fecha_Nac_ano_mayus) and self.validarMes(fecha_Nac_mes_mayus) and self.validarDia:
             parte2 = (
-                # Llamamos las funciones para berificar
-                self.validarAno(fecha_Nac_ano_mayus[:-2]) + # Tomamos los últimos 2 caractéres del año
-                self.validarMes(fecha_Nac_mes_mayus) +
-                self.validarDia(fecha_Nac_dia_mayus)
+                # Juntamos las partes de la fecha
+                # el '0' es para rellenar los espacios vacios
+                # El '2' indica que la longitud de los datos es de 2 
+                # Y la 'd' indica que es un número
+                str(fecha_Nac_ano_mayus)[-2:] +
+                f"{fecha_Nac_mes_mayus:02d}" +
+                f"{fecha_Nac_dia_mayus:02d}"
+
             )
         else:
             parte2 = "Error en la parte #2"
@@ -60,8 +65,8 @@ class CurpModel:
 
         # ^ P5: Primeras consonantes internas de apellidos y nombre
         parte5 = (
-            self.buscarConsonante(ape_Pa_mayus) + 
             self.buscarConsonante(ape_Ma_mayus) + 
+            self.buscarConsonante(ape_Pa_mayus) + 
             self.buscarConsonante(nombre_mayus)
         )
 
@@ -136,12 +141,12 @@ class CurpModel:
         return "Error: Día inválido"
     
     # Verificamos el sexo
-    def sexoValidador(sexo):
+    def sexoValidador(self, sexo):
         if sexo == 'H' or sexo == 'M':
             return True
         return "Error: Sexo incorrecto"
 
-    def estadoVerificador(estado):
+    def estadoVerificador(self, estado):
         # Primero definiomos los estado válidos:
         codigoEstadoCurp = ["AS", "BC", "BS", "CC", "CL", "CM", "CS", "CH", "DF", "DG", 
                         "GT", "GR", "HG", "JC", "MC", "MN", "MS", "NT", "NL", "OC",
@@ -149,7 +154,7 @@ class CurpModel:
                         "YN", "ZS", "NE"]
         
         # Ahora verificamos si el estado es correcto
-        if estado == codigoEstadoCurp.get(estado):
+        if estado in codigoEstadoCurp:
             return True
         
 
@@ -187,7 +192,6 @@ print(f'Tu CURP es el siguiente: {crearCurp}')
 
 
 """
-Que agregi:      SAAC20          RMS
-Resultado:  RAM ISAAC20041004 H GT RMS
-Esperado:   RAMI 041004 H GT MRS A7
+Resultado:  RAMI 04-10-04 H GT MRS
+Esperado:   RAMI 04-10-04 H GT MRS A7
 """
