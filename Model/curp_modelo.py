@@ -17,9 +17,9 @@ class CurpModel:
         nombre_mayus = nombre.upper()
         ape_Pa_mayus = ape_Pa.upper()
         ape_Ma_mayus = ape_Ma.upper()
-        fecha_Nac_ano_mayus = fecha_Nac_ano.upper()       # ! Como lo hago?
-        fecha_Nac_mes_mayus = fecha_Nac_mes.upper()       # ! Como lo hago?
-        fecha_Nac_dia_mayus = fecha_Nac_dia.upper()       # ! Como lo hago?
+        fecha_Nac_ano_mayus = fecha_Nac_ano
+        fecha_Nac_mes_mayus = fecha_Nac_mes
+        fecha_Nac_dia_mayus = fecha_Nac_dia
         sexo_mayus = sexo.upper()
         estado_mayus = estado.upper()
 
@@ -35,16 +35,28 @@ class CurpModel:
         )
 
         # ^ P2: Fecha AA/MM/DD
-        parte2 = (
-            # Llamamos las funciones para berificar
-            self.
-        )
+        # Validamos los datos:
+        if self.validarAno(fecha_Nac_ano_mayus) and self.validarMes(fecha_Nac_mes_mayus) and self.validarDia:
+            parte2 = (
+                # Llamamos las funciones para berificar
+                self.validarAno(fecha_Nac_ano_mayus[:-2]) + # Tomamos los últimos 2 caractéres del año
+                self.validarMes(fecha_Nac_mes_mayus) +
+                self.validarDia(fecha_Nac_dia_mayus)
+            )
+        else:
+            parte2 = "Error en la parte #2"
 
         # ^ P3: Sexo (Hombre/Mujer)
-        parte3 = sexo_mayus
+        if self.sexoValidador(sexo_mayus):
+            parte3 = sexo_mayus
+        else:
+            parte3 = "Error en el sexo"
 
         # ^ P4: Entidad federativa
-        parte4 = estado_mayus
+        if self.estadoVerificador(estado_mayus):
+            parte4 = estado_mayus
+        else:
+            parte4 = "Error en la parte del estado"
 
         # ^ P5: Primeras consonantes internas de apellidos y nombre
         parte5 = (
@@ -60,6 +72,8 @@ class CurpModel:
 
         # ? Devolvemos el CURP como respuesta
         return curp
+    
+    
 
 
     # * Buscmaos la primera vocal de la palabra
@@ -92,7 +106,7 @@ class CurpModel:
     
 
     # * Revisamos el Día
-    def validarDia(self, diaSeleccionado, anoFecha, mesFecha):
+    def validarDia(self, anoFecha, mesFecha, diaSeleccionado):
         # Creamos un diccionario con los días por mes del año:
         diasMes = {
             1:31,
@@ -117,9 +131,27 @@ class CurpModel:
                 return True
             
         # Ahora validamos que el día es valido deacuerdo al mes:
-        if 1 <= diaSeleccionado <= anoBisiesto.get(mesFecha,0):
+        if 1 <= diaSeleccionado <= diasMes.get(mesFecha,0):
             return True
         return "Error: Día inválido"
+    
+    # Verificamos el sexo
+    def sexoValidador(sexo):
+        if sexo == 'H' or sexo == 'M':
+            return True
+        return "Error: Sexo incorrecto"
+
+    def estadoVerificador(estado):
+        # Primero definiomos los estado válidos:
+        codigoEstadoCurp = ["AS", "BC", "BS", "CC", "CL", "CM", "CS", "CH", "DF", "DG", 
+                        "GT", "GR", "HG", "JC", "MC", "MN", "MS", "NT", "NL", "OC",
+                        "PL", "QT", "QR", "SP", "SL", "SR", "TC", "TS", "TL", "VZ",
+                        "YN", "ZS", "NE"]
+        
+        # Ahora verificamos si el estado es correcto
+        if estado == codigoEstadoCurp.get(estado):
+            return True
+        
 
 
 
@@ -140,13 +172,15 @@ modelo = CurpModel()
 nombre = 'Isaac'
 apellidoP = 'Ramírez'
 apellidoM = 'Maria Y Campos'
-echaNacimiento = '20041004'
+fechaAno = 2004
+fechaMes = 10
+fechaDia = 4
 sexoHM = 'H'
 estadoPais = 'GT'
 
 
 # Ahora llamamos a la función:
-crearCurp = modelo.generarCurp(nombre, apellidoP, apellidoM, echaNacimiento, sexoHM, estadoPais)
+crearCurp = modelo.generarCurp(nombre, apellidoP, apellidoM, fechaAno, fechaMes, fechaDia, sexoHM, estadoPais)
 
 # Mostrmos el resultado
 print(f'Tu CURP es el siguiente: {crearCurp}')
