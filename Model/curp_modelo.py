@@ -1,4 +1,4 @@
-
+import hashlib
 # * Creamos las funciónes del pory3cto
 
 
@@ -156,11 +156,14 @@ class CurpModel:
         if estado in codigoEstadoCurp:
             return True
         
+    # Encriptador
+    def encriptarCurp(self, curp):
+        return hashlib.sha256(curp.encode()).hexdigest()
 
 
 
     # ? -----------------------------------------------------------------
-    # ? ------------- Funciónes para la verificación del CRUP--------------
+    # ? ------------- Funciónes para la verificación del CRUP------------
     # ? -----------------------------------------------------------------
     # Creamos la función para validar el curp 
     def validarCurp(self, curp):
@@ -188,52 +191,67 @@ class CurpModel:
 
         # Si todo es correcto entonces retornamos un mensaje de éxito
         return " es válido"
+    
 
 
 
-# ! Probamos el código:
-# ^ Validador del CURP
-validarCurp = CurpModel()
-curpValido = validarCurp.validarCurp("RAMI041004HGTMRS07")
-print(f'El curp{curpValido}')
-"""
-        4 letras // 6 números // 6-7 letras // 1 número
-
-Resultado:  REMI 05-05-10 H CH MRS
-Resultado:  REMI 050510 HCHMRS 05
-Esperado:   REMI 05-05-10 H  C  H  M  R  S  0  5
-            0123 45 67 89 10 11 12 13 14 15 16 17
-"""
-
-# ? -------------------------
-# ? -------------------------
-# ? -------------------------
-"""
-# ^ Generador del CURP
-# Instanciamos la clase para poder utilizarla
-modelo = CurpModel()
-
-# Datos
-nombre = 'Isaac'
-apellidoP = 'Ramírez'
-apellidoM = 'Maria Y Campos'
-fechaAno = 2004
-fechaMes = 10
-fechaDia = 4
-sexoHM = 'H'
-estadoPais = 'GT'
+    # ? -----------------------------------------------------------------
+    # ? ---------------------- Sección del menú -------------------------
+    # ? -----------------------------------------------------------------
+def mostrar_menu():
+    print("1. Generar CURP")
+    print("2. Ingresar CURP")
+    print("3. Salir")
 
 
-# Ahora llamamos a la función:
-crearCurp = modelo.generarCurp(nombre, apellidoP, apellidoM, fechaAno, fechaMes, fechaDia, sexoHM, estadoPais)
+# * Creamos la funcion para seleccionar la acción
+def main():
+    modelo = CurpModel()
+    while True:
+        mostrar_menu()
+        opcion = input("Seleccione una opción: ")
 
-# Mostrmos el resultado
-print(f'Tu CURP es el siguiente: {crearCurp}')
+        # Opcion para crear un CURP
+        if opcion == "1":
+            nombre = input("Nombre: ")
+            ape_Pa = input("Apellido Paterno: ")
+            ape_Ma = input("Apellido Materno: ")
+            fecha_Nac_ano = int(input("Año de nacimiento (YYYY): "))
+            fecha_Nac_mes = int(input("Mes de nacimiento (MM): "))
+            fecha_Nac_dia = int(input("Día de nacimiento (DD): "))
+            sexo = input("Sexo (H/M): ")
+            estado = input("Estado (siglas): ")
 
-"""
+            curp = modelo.generarCurp(nombre, ape_Pa, ape_Ma, fecha_Nac_ano, fecha_Nac_mes, fecha_Nac_dia, sexo, estado)
+            print(f"Tu CURP es: {curp}")
+            print(f"Tu CURP encriptada es: {modelo.encriptarCurp(curp)}")
+
+        # Opcion para validar un CURP
+        elif opcion == "2":
+            curp = input("Ingresa tu CURP: ")
+            validacion = modelo.validarCurp(curp)
+            if "válido" in validacion:
+                print("CURP válido")
+                # Extraer información del CURP
+                fecha_nacimiento = curp[4:10]
+                sexo = curp[10]
+                estado = curp[11:13]
+
+                print(f"Fecha de nacimiento: {fecha_nacimiento[0:2]}/{fecha_nacimiento[2:4]}/{fecha_nacimiento[4:6]}")
+                print(f"Sexo: {'Hombre' if sexo == 'H' else 'Mujer'}")
+                print(f"Estado: {estado}")
+            else:
+                print(validacion)
+
+        # Opcion para salid dle menú
+        elif opcion == "3":
+            print("Saliendo...")
+            break
+
+        else:
+            print("Opción no válida. Intente de nuevo.")
 
 
-"""
-Resultado:  RAMI 04-10-04 H GT MRS
-Esperado:   RAMI 04-10-04 H GT MRS A7
-"""
+# ^ Ejecutamos el programa
+if __name__ == "__main__":
+    main()
