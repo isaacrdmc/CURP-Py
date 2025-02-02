@@ -3,7 +3,7 @@
 
 
 class CurpModel:
-    # Creamos el construccotor de la clase
+    # Creamos el construccotor de la clase para acceder a las funciónes que se encuntran dentro de la clase
     def __init__(self):
         pass
 
@@ -109,7 +109,6 @@ class CurpModel:
             return True 
         return "Error: mes invalido"
     
-
     # * Revisamos el Día
     def validarDia(self, anoFecha, mesFecha, diaSeleccionado):
         # Creamos un diccionario con los días por mes del año:
@@ -140,7 +139,7 @@ class CurpModel:
             return True
         return "Error: Día inválido"
     
-    # Verificamos el sexo
+    # * Verificamos el sexo
     def sexoValidador(self, sexo):
         if sexo == 'H' or sexo == 'M':
             return True
@@ -165,11 +164,52 @@ class CurpModel:
     # ? -----------------------------------------------------------------
     # Creamos la función para validar el curp 
     def validarCurp(self, curp):
-        return 
-    
+        # Primero vlaidamos el tamaño del CURP
+        if len(curp) !=18:
+            return "Error: El CURP no es válido"
+
+        curpMayuscula = curp.upper()
+        
+        # AHora creamso las vriables para la verificaicón dle CURP
+        curpParte1 = curpMayuscula[:4]  # REMI
+        curpParte2 = curpMayuscula[4:10]    # 050510
+        curpParte3 = curpMayuscula[10:16]   # HCHMRS
+        curpParte4 = curpMayuscula[16:18]   # 05
+
+        # * En esta parte verificamos que las partes del CURP sean correctas
+        if not curpParte1.isalpha():    # Nos aseguramos de que solo contenga letras en esta parte
+            return "Error en la primera parte del CURP, pues deben de ser letras"
+        if not curpParte2.isdigit():    # Ahora nos aseguramos de que solo contenga números
+            return "Error en la segunda parte del CURP deben de ser números"
+        if not curpParte3.isalpha():    # Ahora nos aseguramos de que solo contenga letras
+            return "Error en la tercera parte del CURP deben de ser letras"
+        if not curpParte4.isdigit():    #Nos asegurmos de que solo contenga un número, que es el último digito del CURP
+            return "Error en la cuarta parte del CURP deben de ser números"
+
+        # Si todo es correcto entonces retornamos un mensaje de éxito
+        return " es válido"
+
 
 
 # ! Probamos el código:
+# ^ Validador del CURP
+validarCurp = CurpModel()
+curpValido = validarCurp.validarCurp("RAMI041004HGTMRS07")
+print(f'El curp{curpValido}')
+"""
+        4 letras // 6 números // 6-7 letras // 1 número
+
+Resultado:  REMI 05-05-10 H CH MRS
+Resultado:  REMI 050510 HCHMRS 05
+Esperado:   REMI 05-05-10 H  C  H  M  R  S  0  5
+            0123 45 67 89 10 11 12 13 14 15 16 17
+"""
+
+# ? -------------------------
+# ? -------------------------
+# ? -------------------------
+"""
+# ^ Generador del CURP
 # Instanciamos la clase para poder utilizarla
 modelo = CurpModel()
 
@@ -189,6 +229,8 @@ crearCurp = modelo.generarCurp(nombre, apellidoP, apellidoM, fechaAno, fechaMes,
 
 # Mostrmos el resultado
 print(f'Tu CURP es el siguiente: {crearCurp}')
+
+"""
 
 
 """
